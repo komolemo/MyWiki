@@ -1,36 +1,41 @@
-from fastapi import FastAPI, Query
-from fastapi.middleware.cors import CORSMiddleware
-from pathlib import Path
-from typing import List
+# main.py
+from fastapi import FastAPI
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models import Base
+from sync import sync_filesystem
+
+DATABASE_URL = "sqlite:///./wiki.db"
+DATA_ROOT = "/path/to/{data}"
+
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 app = FastAPI()
 
-# CORS設定（必要に応じて調整）
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # 本番環境では制限すること
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        sync_filesystem(db, DATA_ROOT)
+    finally:
+        db.close()
 
-@app.get("/list")
-def list_items(
-    path: str = Query(default="data", description="相対パス"),
-    only_dirs: bool = Query(default=False, description="フォルダのみ返すか"),
-    recursive: bool = Query(default=False, description="再帰的に探索するか")
-) -> List[str]:
-    base_path = Path(path)
-    if not base_path.exists():
-        return []
-
-    if recursive:
-        items = base_path.rglob("*")
-    else:
-        items = base_path.iterdir()
-
-    result = [
-        str(item.relative_to(base_path))
-        for item in items
-        if (only_dirs and item.is_dir()) or (not only_dirs)
+@app.get("/categories")
+def list_categories():
+    db = SessionLocal()
+    cats = db.query(Category).all()
+    return [
+        {"id": c.id, "name": c.name, "parent_id": c.parent_id, "path": c.path}
+        for c in cats
     ]
-    return result
+
+@app.get("/pages")
+def list_pages():
+    db = SessionLocal()
+    pages = db.query(Page).all()
+    return [
+        {"id": p.id, "title": p.title, "file_path": p.file_path, "category_id": p.category_id}
+        for p in pages
+    ]
