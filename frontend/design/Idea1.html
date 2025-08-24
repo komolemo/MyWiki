@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Wiki</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; }
+    header { padding: 10px; background: #f0f0f0; }
+    #search { width: 300px; padding: 5px; }
+    main { display: flex; flex: 1; }
+    nav { width: 200px; background: #e0e0e0; padding: 10px; overflow-y: auto; }
+    article { flex: 1; padding: 20px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <header>
+    <input type="text" id="search" placeholder="検索...">
+  </header>
+  <main>
+    <nav>
+      <ul>
+        <li>カテゴリA</li>
+        <li>カテゴリB</li>
+        <li>カテゴリC</li>
+      </ul>
+    </nav>
+    <article>
+      <h1>記事タイトル</h1>
+      <p>ここに記事の内容が表示されます。</p>
+    </article>
+  </main>
+</body>
+</html>

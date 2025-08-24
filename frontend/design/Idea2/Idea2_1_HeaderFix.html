@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>MY Career Wiki</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #fafafa; }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #menuBtn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    #logo {
+      font-weight: bold;
+      color: #000;
+      font-size: 20px;
+      margin-left: 10px;
+    }
+    #searchBar {
+      flex: 1;
+      margin: 0 20px;
+      display: flex;
+      align-items: center;
+      max-width: 500px;
+    }
+    #searchInput {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 2px 0 0 2px;
+      font-size: 16px;
+    }
+    #searchButton {
+      padding: 8px 12px;
+      background: #f8f8f8;
+      border: 1px solid #ccc;
+      border-left: none;
+      border-radius: 0 2px 2px 0;
+      cursor: pointer;
+    }
+    #settingsBtn {
+      font-size: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+    nav {
+      width: 220px;
+      background: #f5f5f5;
+      padding: 15px;
+      border-right: 1px solid #ddd;
+      display: block;
+    }
+    nav.hidden {
+      display: none;
+    }
+    article {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button id="menuBtn" title="メニュー">☰</button>
+    <div id="logo">MY Career Wiki</div>
+    <div id="searchBar">
+      <input type="text" id="searchInput" placeholder="検索">
+      <button id="searchButton">🔍</button>
+    </div>
+    <button id="settingsBtn" title="設定">⚙️</button>
+  </header>
+
+  <div class="container">
+    <nav id="sidebar">
+      <h3>カテゴリー</h3>
+      <ul>
+        <li>📁 技術</li>
+        <li>📁 メモ</li>
+        <li>📁 リンク集</li>
+      </ul>
+    </nav>
+    <article>
+      <h1>ようこそ</h1>
+      <p>これはローカルWikiのトップページです。</p>
+    </article>
+  </div>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>

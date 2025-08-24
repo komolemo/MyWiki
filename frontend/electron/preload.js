@@ -4,4 +4,5 @@ contextBridge.exposeInMainWorld('api', {
   readCategories: (dirPath) => ipcRenderer.invoke('read-categories', dirPath),
   readArticles: (dirPath) => ipcRenderer.invoke('read-articles', dirPath),
   readArticle: (filePath) => ipcRenderer.invoke('read-article', filePath),
+  toggleChangeTheme: (isLight) => ipcRenderer.invoke('toggle-changetheme', isLight),
 });

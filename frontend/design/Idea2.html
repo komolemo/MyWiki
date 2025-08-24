@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Wiki</title>
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #fafafa; }
+    header { padding: 15px; background: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    #search { width: 100%; max-width: 400px; padding: 8px; font-size: 16px; }
+    .container { display: flex; height: calc(100vh - 60px); }
+    nav { width: 220px; background: #f5f5f5; padding: 15px; border-right: 1px solid #ddd; }
+    article { flex: 1; padding: 30px; overflow-y: auto; }
+    h1 { margin-top: 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <input type="text" id="search" placeholder="🔍 検索キーワードを入力">
+  </header>
+  <div class="container">
+    <nav>
+      <h3>カテゴリー</h3>
+      <ul>
+        <li>📁 技術</li>
+        <li>📁 メモ</li>
+        <li>📁 リンク集</li>
+      </ul>
+    </nav>
+    <article>
+      <h1>ようこそ</h1>
+      <p>これはローカルWikiのトップページです。</p>
+    </article>
+  </div>
+</body>
+</html>

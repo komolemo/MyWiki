@@ -1,33 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import Sidebar from '../components/sidebar';
-import ArticleDisplay from '../components/articleDisplay';
+import React, { useState } from 'react';
+import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
+import Article from '../components/Article';
 
-const dataDir = '../../data';
+const App = () => {
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
-export const PageMenu = () => {
-  const [categories, setCategories] = useState([]);
-  const [articles, setArticles] = useState([]);
-  const [selectedArticle, setSelectedArticle] = useState('');
-
-  useEffect(() => {
-    window.api.readCategories(dataDir).then(setCategories).catch(console.error);
-  }, []);
-
-  const loadArticles = (category) => {
-    const categoryPath = `${dataDir}/${category}`;
-    window.api.readArticles(categoryPath).then(setArticles).catch(console.error);
-  };
-
-  const loadArticle = (category, article) => {
-    const articlePath = `${dataDir}/${category}/${article}`;
-    window.api.readArticle(articlePath).then(setSelectedArticle).catch(console.error);
+  const toggleSidebar = () => {
+    setSidebarVisible(prev => !prev);
   };
 
   return (
-    <div className="flex">
-      <Sidebar categories={categories} loadArticles={loadArticles} />
-      <ArticleDisplay articles={articles} loadArticle={loadArticle} content={selectedArticle} />
+    <div className="h-screen flex flex-col w-full">
+      <Header toggleSidebar={toggleSidebar} />
+      <div className="flex flex-1">
+        <Sidebar visible={sidebarVisible} />
+        <Article />
+      </div>
     </div>
   );
-};
+}
 
+export default App;

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Wiki</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    header { background: #333; color: white; padding: 10px; text-align: center; }
+    #search { width: 90%; padding: 8px; font-size: 16px; }
+    .layout { display: flex; flex-direction: row; height: calc(100vh - 50px); }
+    nav { width: 180px; background: #444; color: white; padding: 10px; overflow-y: auto; }
+    article { flex: 1; padding: 20px; overflow-y: auto; }
+    @media (max-width: 600px) {
+      .layout { flex-direction: column; }
+      nav { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <input type="text" id="search" placeholder="検索..." />
+  </header>
+  <div class="layout">
+    <nav>
+      <h3>カテゴリー</h3>
+      <ul>
+        <li>📝 ノート</li>
+        <li>📚 資料</li>
+        <li>🔗 リンク</li>
+      </ul>
+    </nav>
+    <article>
+      <h1>記事タイトル</h1>
+      <p>モバイルでも快適に閲覧できます。</p>
+    </article>
+  </div>
+</body>
+</html>
