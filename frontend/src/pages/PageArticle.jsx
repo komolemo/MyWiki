@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Sidebar from '../components/sidebar';
-import { Article } from '../components/article';
+import Sidebar from '../components/Sidebar';
+import Article from '../components/Article';
 
 export const PageArticle = () => {
     return (

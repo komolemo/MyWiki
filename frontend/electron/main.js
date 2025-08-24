@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, nativeTheme, ipcMain } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -18,6 +18,13 @@ ipcMain.handle('read-articles', async (dirPath) => {
 
 ipcMain.handle('read-article', async (filePath) => {
   return fs.readFileSync(path.resolve(filePath), 'utf-8');
+});
+
+ipcMain.handle('toggle-changetheme', () => {
+  console.log(nativeTheme.themeSource)
+  nativeTheme.themeSource = nativeTheme.themeSource != 'dark' || nativeTheme.themeSource === 'system'
+    ? 'dark'
+    : 'light';
 });
 
 function createWindow() {
