@@ -22,7 +22,23 @@ class DocxToMarkdownConverter:
         colored = cls.apply_color_style(bolded, run.font.color.rgb)
         return colored
 
+    @classmethod
+    def convert(cls, docx_path: str, output_path: str):
+        doc = Document(docx_path)
+        lines = []
+        cls._last = 0
 
+        for para in doc.paragraphs:
+            line = "".join(cls.extract_styled_text(run) for run in para.runs)
+            lines.append(Docx_Outline.outline(para) + line.strip())
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
+
+class Docx_Outline:
+    _last_level = 0
+    _index = [0, 0, 0, 0]
+    # ================================================================
     # スタイルID
     @classmethod
     def get_style_id(cls, paragraph) -> str:
@@ -32,48 +48,109 @@ class DocxToMarkdownConverter:
             if pStyle is not None:
                 return pStyle.get(qn('w:val'))
         return None
-
+    
+    # ================================================================
+    # 階層
     @classmethod
     def map_id_to_marker(cls, id_str: str) -> int:
+        print(id_str)
         return {
             "a": 0,
-            "a0": 0,
-            "1": 1,
-            "a1": 2,
-            "20": 3,
-            "3": 4
-        }.get(id_str, cls._last)
+            "a0": 1,
+            "1": 2,
+            "a1": 3,
+            "20": 4,
+            "3": 5
+        }.get(id_str, cls._last_level)
+    
+    # ================================================================
+    # インデント
+    @classmethod
+    def indent(cls, level) -> int:
+        if level >= 0:
+            return [0, 0, 1, 2, 3, 4][level]
+        return cls._last_level
+
+    # ================================================================
+    # 記号
+    @classmethod
+    def reset_index(cls):
+        # print('aaa')
+        cls._index[1] = 0
+        cls._index[2] = 0
+        cls._index[3] = 0
+
+    @classmethod
+    def index_count(cls, level):
+        if level < 4: # 箇条書きを排する
+            if cls._last_level > level: # 
+                cls.reset_index()
+            cls.add_index(level)
+            return cls._index[level]
+        return None
     
     @classmethod
-    def symbol(cls, paragraph):
-        style_id = cls.get_style_id(paragraph)
-        return {
-            "a": 'Ⅰ',
-            "a0": '1',
-            "1": '(1)',
-            "a1": '①',
-            "20": '○',
-            "3": '■'
-        }.get(style_id, '')
+    def add_index(cls, level):
+        cls._index[level] += 1
 
     @classmethod
-    def get_list_level(cls, paragraph) -> int:
-        style_id = cls.get_style_id(paragraph)
-        cls._last = style_id
-        return cls.map_id_to_marker(style_id)
+    def index_str(cls, level, index) -> str:
+        if level == 0:
+            return cls.to_roman(index)
+        elif level == 1:
+            return str(index)
+        elif level == 2:
+            return f'({index})'
+        elif level == 3:
+            return cls.to_circle_number(index)
+        elif level == 4:
+            return '○'
+        elif level == 5:
+            return '■'
+        return ''
+    
+    @classmethod
+    def to_roman(cls, n):
+        if not (1 <= n <= 3999):
+            raise ValueError("1〜3999の範囲で指定してください")
+
+        val = [
+            1000, 900, 500, 400,
+            100, 90, 50, 40,
+            10, 9, 5, 4, 1
+        ]
+        syms = [
+            "M", "CM", "D", "CD",
+            "C", "XC", "L", "XL",
+            "X", "IX", "V", "IV", "I"
+        ]
+
+        roman = ""
+        for i in range(len(val)):
+            count = n // val[i]
+            roman += syms[i] * count
+            n -= val[i] * count
+        return roman
 
     @classmethod
-    def convert(cls, docx_path: str, output_path: str):
-        doc = Document(docx_path)
-        lines = []
-        cls._last = 0
+    def to_circle_number(cls, index):
+        if index > 0 and index < 21:
+            return [
+                "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩",
+                "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳",
+            ][index]
+        return '○'
 
-        for para in doc.paragraphs:
-            line = "".join(cls.extract_styled_text(run) for run in para.runs)
-            indent_level = cls.get_list_level(para)
-            lines.append("    " * indent_level + cls.symbol(para) + line.strip())
-
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write("\n".join(lines))
+    @classmethod
+    def symbol(cls, level):
+        index = cls.index_count(level)
+        cls._last_level = level
+        return cls.index_str(level, index)
+    
+    @classmethod
+    def outline(cls, paragraph) -> str:
+        level = cls.map_id_to_marker(cls.get_style_id(paragraph))
+        indent_level = cls.indent(level)
+        return ("    " * indent_level + cls.symbol(level))
 
 DocxToMarkdownConverter.convert('./data/Category3/example3.docx', './data/Category3/example3.md')
