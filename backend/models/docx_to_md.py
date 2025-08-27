@@ -20,7 +20,7 @@ class DocxToMarkdownConverter:
         raw_text = run.text
         bolded = cls.apply_bold_style(raw_text, run.bold)
         colored = cls.apply_color_style(bolded, run.font.color.rgb)
-        return colored
+        return colored.replace("\n", "")
 
     @classmethod
     def convert(cls, docx_path: str, output_path: str):
@@ -29,8 +29,11 @@ class DocxToMarkdownConverter:
         cls._last = 0
 
         for para in doc.paragraphs:
-            line = "".join(cls.extract_styled_text(run) for run in para.runs)
-            lines.append(Docx_Outline.outline(para) + line.strip())
+            # boldやcolorの処理
+            outline = Docx_Outline.outline(para)
+            text = "".join([Docx_Outline.text_indent(run) + cls.extract_styled_text(run) for run in para.runs]).strip()
+            line = outline + text
+            lines += [line]
 
         with open(output_path, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
@@ -53,7 +56,6 @@ class Docx_Outline:
     # 階層
     @classmethod
     def map_id_to_marker(cls, id_str: str) -> int:
-        print(id_str)
         return {
             "a": 0,
             "a0": 1,
@@ -70,6 +72,19 @@ class Docx_Outline:
         if level >= 0:
             return [0, 0, 1, 2, 3, 4][level]
         return cls._last_level
+    
+    @classmethod
+    def text_indent(cls, run) -> str:
+        level = cls.br_text_level(run)
+        return ("\n" if level > 0 else "") + "#" * level
+
+    @classmethod
+    def br_text_level(cls, run) -> int:
+        run_xml = run._element
+        for child in run_xml.iter():
+            if child.tag == qn('w:br'):
+                return cls._last_level - 1
+        return 0
 
     # ================================================================
     # 記号
@@ -151,6 +166,38 @@ class Docx_Outline:
     def outline(cls, paragraph) -> str:
         level = cls.map_id_to_marker(cls.get_style_id(paragraph))
         indent_level = cls.indent(level)
-        return ("    " * indent_level + cls.symbol(level))
+        return ("#" * indent_level + cls.symbol(level))
+
+    # @classmethod
+    # def get_outline_prefix(cls, paragraph) -> str:
+    #     level = cls.map_id_to_marker(cls.get_style_id(paragraph))
+    #     indent_level = cls.indent(level)
+    #     prefix = "    " * indent_level + cls.symbol(level)
+    #     cls._last_level = level  # 状態更新
+    #     return prefix
+
+    # @classmethod
+    # def split_runs_by_linebreak(cls, paragraph) -> list:
+    #     lines = []
+    #     current_line = ""
+
+    #     for run in paragraph.runs:
+    #         run_xml = run._element
+    #         for child in run_xml.iter():
+    #             if child.tag == qn('w:br'):
+    #                 lines.append(current_line.strip())
+    #                 current_line = ""
+    #         current_line += run.text
+
+    #     if current_line.strip():
+    #         lines.append(current_line.strip())
+
+    #     return lines
+
+    # @classmethod
+    # def outline_lines(cls, paragraph) -> list:
+    #     prefix = cls.get_outline_prefix(paragraph)
+    #     raw_lines = cls.split_runs_by_linebreak(paragraph)
+    #     return [prefix + line for line in raw_lines]
 
 DocxToMarkdownConverter.convert('./data/Category3/example3.docx', './data/Category3/example3.md')
