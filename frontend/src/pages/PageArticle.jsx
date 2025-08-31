@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import Article from '../components/Article';
+import Article from '../components/Article/Article';
+import { ArticleProvider } from '../components/Article/ArticleProvider';
+import { useParams } from "react-router-dom";
 
 export const PageArticle = () => {
+    const { docId } = useParams();
     return (
         <>
             <div className="flex">
-                <Sidebar/>
-                <Article/>
+                {/* <Sidebar/> */}
+                <ArticleProvider docId={docId}>
+                    <Article/>
+                </ArticleProvider>
             </div>
         </>
     )

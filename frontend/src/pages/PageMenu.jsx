@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import Article from '../components/Article';
+// import Header from '../components/Header/Header';
+// import Sidebar from '../components/Sidebar/Sidebar';
+// import Article from '../components/Article/Article';
 
 const App = () => {
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+  // const [sidebarVisible, setSidebarVisible] = useState(true);
 
-  const toggleSidebar = () => {
-    setSidebarVisible(prev => !prev);
-  };
+  // const toggleSidebar = () => {
+  //   setSidebarVisible(prev => !prev);
+  // };
+  return (
+    <Article />
+  )
 
   return (
     <div className="h-screen flex flex-col w-full">

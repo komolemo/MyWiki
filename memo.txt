@@ -1,0 +1,2 @@
+# start_api.ps1
+& .\.venv\Scripts\python.exe -m uvicorn backend.api:app --reload --port 8000

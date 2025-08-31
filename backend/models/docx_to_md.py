@@ -76,7 +76,7 @@ class Docx_Outline:
     @classmethod
     def text_indent(cls, run) -> str:
         level = cls.br_text_level(run)
-        return ("\n" if level > 0 else "") + "#" * level
+        return ("<br>" if level > 0 else "") # + "    " * level
 
     @classmethod
     def br_text_level(cls, run) -> int:
@@ -166,7 +166,7 @@ class Docx_Outline:
     def outline(cls, paragraph) -> str:
         level = cls.map_id_to_marker(cls.get_style_id(paragraph))
         indent_level = cls.indent(level)
-        return ("#" * indent_level + cls.symbol(level))
+        return ("    " * indent_level + cls.symbol(level))
 
     # @classmethod
     # def get_outline_prefix(cls, paragraph) -> str:
