@@ -2,14 +2,14 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import PageMenu from './pages/PageMenu';
-// import { PageArticle } from './pages/PageArticle';
+import { PageArticle } from './pages/PageArticle';
 
 const RouteConfig = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<PageMenu />} />
-        {/* <Route path="/article" element={<PageArticle />} /> */}
+        <Route path="/article/:docId" element={<PageArticle />} />
       </Route>
     </Routes>
   );
